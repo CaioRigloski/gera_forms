@@ -1,38 +1,30 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const passport = require('passport')
-
-const { createLogin, passValidation, compareHash } = require('./controllers/controller')
+const { createLogin, verifyAuth } = require('./controllers/controller')
 const Login = require('./database/login')
+const auth = require('./controllers/auth')
 
 const router = express.Router()
+
+
+router.get('/', (req, res) => {
+  res.render('home')
+})  
 
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login',
-  failureFlash: true
-/*   var loginReq = req.body.login
-  var passwordReq = req.body.password
-  
-  if(loginReq) {
-    if(await passValidation(loginReq, passwordReq) == true) {
-      res.render('home')
-      console.log(req.user)
-    }
-  }
-  
-  let er = []
-  er.push({text: "login incorreto"})  
-  res.render('initial/login', {er: er}) */
-}))
+  failureFlash: true,
+})
+)
 
 router.get('/login', (req, res) => {
-  res.render('initial/login')
-})
+  res.render('initial/login', {text: req.flash('error')})
+})    
 
-router.get('/', (req, res) => {
-  res.render('home')
-  console.log(req.user)
+router.get('/about', (req, res) => {
+  res.render('about')
 })
 
 router.get('/create-login', (req, res) => {
@@ -49,5 +41,11 @@ router.post('/create-login', async (req, res) => {
 router.get('/forgot-password', (req, res) => {
   res.render('initial/forgot-password')
 })
+
+router.get('/api/user', (req, res) => {
+  res.json({
+    username: req.user
+  })
+})  
 
 module.exports = router

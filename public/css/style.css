@@ -1,3 +1,13 @@
 .card {
   width: 350px;
 }
+
+.col-md-3 {
+  flex: 1 0 auto
+}
+
+#form_name{
+  width: fit-content;
+  flex: 0 1 auto;
+  font-size: 30px;
+}

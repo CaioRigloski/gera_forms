@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const hbs = require('express-handlebars')
 const Login = require('./database/login')
 const auth = require('./controllers/auth')
+const userRoutes = require('./userRoutes')
 
 
 app.engine('handlebars', hbs.engine({
@@ -26,25 +27,26 @@ app.use(session({
   secret: 'keyboard cat',
   resave: true,
   saveUninitialized: true,
-  cookie: {}
+  cookie: {},
 }))
 
 app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(flash())
-app.use((req, res, next) => {
-  res.locals.success_msg = req.flash("success_msg")
-  res.locals.error_msg = req.flash("error_msg")
+/* app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.error_msg = req.flash('error_msg')
   next()
-})
+}) */
 
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
+app.use(userRoutes)
+app.use(router)
 
-app.use('/', router)
 app.use(auth)
 
 

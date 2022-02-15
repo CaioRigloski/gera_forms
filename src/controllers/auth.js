@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const Login = require("../database/login")
 
 
-module.exports = (auth) => {
+const auth = (auth) => {
 
   passport.serializeUser(function(user, done) {
     return done(null, user);
@@ -16,9 +16,9 @@ module.exports = (auth) => {
   
   passport.use(new localStrategy({
     usernameField: 'login',
-    passwordField: 'password'
+    passwordField: 'password',
   },
-  function(username, password, done) {
+  function (username, password, done, req) {
     Login.findOne({
       where: {
         login: username
@@ -35,11 +35,13 @@ module.exports = (auth) => {
         return done(null, false, { message: 'Login ou senha incorretos' })
       }
   
-      return done(null, user)
-      
+      return done(null, user.login)
     })
   }))
 }
 
-
+module.exports = [
+  auth,
+  
+]
 

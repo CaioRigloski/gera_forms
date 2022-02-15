@@ -23,6 +23,15 @@ async function createLogin(loginReq, passwordReq) {
   })
 }
 
+function verifyAuth(req, res, next) {
+  if(req.isAuthenticated()) {
+    next()
+  }
+  else {
+    res.redirect('/login')
+  }
+}
+
 
 /* let user = []
 
@@ -49,5 +58,6 @@ module.exports = {
   createLogin,
   //passValidation,
   //user
-  isValidPassword
+  isValidPassword,
+  verifyAuth
 }
