@@ -28,6 +28,7 @@ function verifyAuth(req, res, next) {
     next()
   }
   else {
+    req.flash('error', 'Acesse para continuar')
     res.redirect('/login')
   }
 }

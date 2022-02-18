@@ -1,5 +1,5 @@
 # GeraForms :page_facing_up:
-### A tool that create and stores forms in the user's account.
+### A tool that create and stores forms.
 
 ## Work in progress :scientist:
     Using the adquired and new knowledge.
@@ -17,3 +17,6 @@
 
 [Passports](https://www.passportjs.org/)
 
+[JQuery](https://jquery.com/)
+
+[Bootstrap](https://getbootstrap.com/)
