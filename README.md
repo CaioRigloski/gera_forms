@@ -15,7 +15,7 @@
 ## Tools :hammer_and_wrench:
 [Handlebars](https://handlebarsjs.com/)
 
-[Passports](https://www.passportjs.org/)
+[Passport](https://www.passportjs.org/)
 
 [JQuery](https://jquery.com/)
 
