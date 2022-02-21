@@ -25,6 +25,19 @@ function newId(element) {
   return countId(idNumber)
 }
 
+// return the id area of the clicked new-field button/dropdown options
+function letAreaIdField(newFieldBtn) {
+  let parentId = newFieldBtn.parent().parent().attr('id')
+
+  let areaId = justNumbers(parentId)
+
+  let lastFieldId = $(`#form_area_container${areaId} .label-field`).last().attr('id')
+  
+  let id = newId(lastFieldId)
+  console.log(parentId, areaId, lastFieldId, id)
+  return { id, areaId }
+}
+
 
 
 $(function() {
@@ -51,6 +64,15 @@ $(function() {
   // Default hidden elements
   $('#form_name_input').hide()
   $('#form_name_check').hide()
+
+  
+})
+
+// Masks
+$(function masks() {
+  $(`.rg-field-input`).mask('00.000.000-0')
+  $('.cpf-field-input').mask('000.000.000-00')
+  $('.cep-field-input').mask('00.000-000')
 })
 
 
@@ -121,11 +143,11 @@ $('#new_area').on({
               </svg>
             </button>
             <div class="dropdown-menu" aria-labelledby="new_field_options">
-              <a class="dropdown-item">Nome e sobrenome</a>
-              <a class="dropdown-item">RG</a>
-              <a class="dropdown-item">CPF</a>
-              <a class="dropdown-item">Endereço completo</a>
-              <a class="dropdown-item">CEP</a>
+              <a class="dropdown-item name-surname-field">Nome e sobrenome</a>
+              <a class="dropdown-item rg-field">RG</a>
+              <a class="dropdown-item cpf-field">CPF</a>
+              <a class="dropdown-item endereco-field">Endereço completo</a>
+              <a class="dropdown-item cep-field">CEP</a>
             </div>
         </div>
       `)
@@ -141,13 +163,12 @@ $('#new_area').on({
 
 // Create new field
 $(document).on('click', '.new-field', function() {
-  let parentId = $(this).parent().parent().attr('id')
-  
-  let areaId = justNumbers(parentId)
+  var thisvar = $(this)
 
-  let lastFieldId = $(`#form_area_container${areaId} .label-field`).last().attr('id')
-  let id = newId(lastFieldId)
-  console.log(parentId, lastFieldId)
+  let ids = letAreaIdField(thisvar)
+
+  let id = ids.id
+  let areaId = ids.areaId
 
   $(`#form_area_container${areaId}`).append(
     `<div>
@@ -164,6 +185,205 @@ $(document).on('click', '.new-field', function() {
       `)
 })
 
+// Pre ready fields
+// Name and surname
+$(document).on('click', '.name-surname-field', function() {
+  var thisvar = $(this)
+
+  let ids = letAreaIdField(thisvar.parent())
+
+  let id = ids.id
+  let areaId = ids.areaId
+  let secondaryFieldId = countId(id)
+
+  $(`#form_area_container${areaId}`).append(
+    `<div>
+      <label for='field_input${id}' id='label_field${id}' class="label-field">Nome</label>
+        <input id='field_input${id}' name='field_input${id}'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="Nome" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+      
+      <label for='field_input${secondaryFieldId}' id='label_field${secondaryFieldId}' class="label-field">Sobrenome</label>
+        <input id='field_input${secondaryFieldId}' name='field_input${secondaryFieldId}'>
+      <input id="field_name_input${secondaryFieldId}" name="field_name_input${secondaryFieldId}" type="text" class="form-control" value="Sobrenome" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${secondaryFieldId}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+    </div>
+      `)
+})
+
+// RG (ID)
+$(document).on('click', '.rg-field', function() {
+  var thisvar = $(this)
+
+  let ids = letAreaIdField(thisvar.parent())
+
+  let id = ids.id
+  let areaId = ids.areaId
+
+  $(`#form_area_container${areaId}`).append(
+    `<div>
+      <label for='field_input${id}' id='label_field${id}' class="label-field">RG</label>
+        <input id='field_input${id}' name='field_input${id}' class='rg-field-input'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="RG" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+      `)
+
+  $(`.rg-field-input`).mask('00.000.000-0')
+
+})
+
+// CPF
+$(document).on('click', '.cpf-field', function() {
+  var thisvar = $(this)
+
+  let ids = letAreaIdField(thisvar.parent())
+
+  let id = ids.id
+  let areaId = ids.areaId
+
+  $(`#form_area_container${areaId}`).append(
+    `<div>
+      <label for='field_input${id}' id='label_field${id}' class="label-field">CPF</label>
+        <input id='field_input${id}' name='field_input${id}' class='cpf-field-input'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="CPF" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+      `)
+
+  $(`.cpf-field-input`).mask('000.000.000-00')
+
+})
+
+// Full adress
+$(document).on('click', '.endereco-field', function() {
+  var thisvar = $(this)
+
+  let ids = letAreaIdField(thisvar.parent())
+
+  let id = ids.id
+  let areaId = ids.areaId
+
+  $(`#form_area_container${areaId}`).append(
+    `<div>
+      <label for='field_input${id}' id='label_field${id}' class="label-field">CEP</label>
+        <input id='field_input${id}' name='field_input${id}' class='cep-field-input'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="CEP" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+
+      <label for='field_input${id}' id='label_field${id}' class="label-field">Logradouro</label>
+        <input id='field_input${id}' name='field_input${id}'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="Logradouro" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+
+      <label for='field_input${id}' id='label_field${id}' class="label-field">Bairro</label>
+        <input id='field_input${id}' name='field_input${id}'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="Bairro" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+
+      <label for='field_input${id}' id='label_field${id}' class="label-field">Cidade</label>
+        <input id='field_input${id}' name='field_input${id}'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="Cidade" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+
+      <label for='field_input${id}' id='label_field${id}' class="label-field">UF</label>
+        <input id='field_input${id}' name='field_input${id}'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="UF" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+      `)
+
+  $(`.cep-field-input`).mask('00.000-000')
+
+})
+
+
+// CEP (Zip code)
+$(document).on('click', '.cep-field', function() {
+  var thisvar = $(this)
+
+  let ids = letAreaIdField(thisvar.parent())
+
+  let id = ids.id
+  let areaId = ids.areaId
+
+  $(`#form_area_container${areaId}`).append(
+    `<div>
+      <label for='field_input${id}' id='label_field${id}' class="label-field">CEP</label>
+        <input id='field_input${id}' name='field_input${id}' class='cep-field-input'>
+      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="CEP" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
+      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+        </svg>
+      </button>
+      `)
+
+  $(`.cep-field-input`).mask('00.000-000')
+
+})
+
+// Search zip code
+/* $(document).on('keyup', '.cep-field-input', function() {
+  var thisvar = $(this)
+
+  let ids = letAreaIdField(thisvar.parent())
+
+  let id = ids.id
+
+  var cepVal = $(`#field-input${id}`).val()
+  var url = `viacep.com.br/ws/${cepVal}/json/`
+  $.ajax({
+    url: url,
+    type: "GET",
+    success: function(response) {
+
+    }
+  })
+}) */
 
 // display of area title and it's edit input
 $(document).on('click', '.edit-area-name', function() {
