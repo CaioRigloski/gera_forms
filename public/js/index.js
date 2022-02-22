@@ -27,14 +27,20 @@ function newId(element) {
 
 // return the id area of the clicked new-field button/dropdown options
 function letAreaIdField(newFieldBtn) {
-  let parentId = newFieldBtn.parent().parent().attr('id')
+  let parentId = newFieldBtn.closest('.area').attr('id')
 
   let areaId = justNumbers(parentId)
 
   let lastFieldId = $(`#form_area_container${areaId} .label-field`).last().attr('id')
-  
+
+/*   let labelField = document.getElementById(`form_area_container${areaId}`).getElementsByClassName('label-field')
+  let lastLabelField = [...labelField].at(-1)
+  if(lastLabelField) {
+    let id = newId(lastLabelField.id)
+  }
+ */
   let id = newId(lastFieldId)
-  console.log(parentId, areaId, lastFieldId, id)
+  
   return { id, areaId }
 }
 
@@ -151,7 +157,7 @@ $('#new_area').on({
             </div>
         </div>
       `)
-    .append(`<div id="form_area_container${id}" class="container d-flex flex-wrap gap-4">
+    .append(`<div id="form_area_container${id}" class="container form-area-container d-flex flex-wrap gap-4">
     </div>`)
 
     var areaNameVal = $(`[name = area_name_input${id}]`).val()
@@ -171,17 +177,9 @@ $(document).on('click', '.new-field', function() {
   let areaId = ids.areaId
 
   $(`#form_area_container${areaId}`).append(
-    `<div>
+    `
       <label for='field_input${id}' id='label_field${id}' class="label-field">Campo${id}</label>
-        <input id='field_input${id}' name='field_input${id}'>
-      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="Campo${id}" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
-      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
-          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
-        </svg>
-      </button>
-    </div>
+      <input id='field_input${id}' name='field_input${id}'>
       `)
 })
 
@@ -190,7 +188,7 @@ $(document).on('click', '.new-field', function() {
 $(document).on('click', '.name-surname-field', function() {
   var thisvar = $(this)
 
-  let ids = letAreaIdField(thisvar.parent())
+  let ids = letAreaIdField(thisvar)
 
   let id = ids.id
   let areaId = ids.areaId
@@ -225,7 +223,7 @@ $(document).on('click', '.name-surname-field', function() {
 $(document).on('click', '.rg-field', function() {
   var thisvar = $(this)
 
-  let ids = letAreaIdField(thisvar.parent())
+  let ids = letAreaIdField(thisvar)
 
   let id = ids.id
   let areaId = ids.areaId
@@ -251,7 +249,7 @@ $(document).on('click', '.rg-field', function() {
 $(document).on('click', '.cpf-field', function() {
   var thisvar = $(this)
 
-  let ids = letAreaIdField(thisvar.parent())
+  let ids = letAreaIdField(thisvar)
 
   let id = ids.id
   let areaId = ids.areaId
@@ -277,7 +275,7 @@ $(document).on('click', '.cpf-field', function() {
 $(document).on('click', '.endereco-field', function() {
   var thisvar = $(this)
 
-  let ids = letAreaIdField(thisvar.parent())
+  let ids = letAreaIdField(thisvar)
 
   let id = ids.id
   let areaId = ids.areaId
@@ -344,22 +342,15 @@ $(document).on('click', '.endereco-field', function() {
 $(document).on('click', '.cep-field', function() {
   var thisvar = $(this)
 
-  let ids = letAreaIdField(thisvar.parent())
+  let ids = letAreaIdField(thisvar)
 
   let id = ids.id
   let areaId = ids.areaId
 
   $(`#form_area_container${areaId}`).append(
-    `<div>
+    `
       <label for='field_input${id}' id='label_field${id}' class="label-field">CEP</label>
         <input id='field_input${id}' name='field_input${id}' class='cep-field-input'>
-      <input id="field_name_input${id}" name="field_name_input${id}" type="text" class="form-control" value="CEP" aria-label="Nome do campo" aria-describedby="field_name" style="display: none; width: fit-content; flex: 0 1 auto">
-      <button id="field_name_check${id}" type="button" class="btn field-name-check btn-success" style="display: none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 18">
-          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-          <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
-        </svg>
-      </button>
       `)
 
   $(`.cep-field-input`).mask('00.000-000')
@@ -370,7 +361,7 @@ $(document).on('click', '.cep-field', function() {
 /* $(document).on('keyup', '.cep-field-input', function() {
   var thisvar = $(this)
 
-  let ids = letAreaIdField(thisvar.parent())
+  let ids = letAreaIdField(thisvar)
 
   let id = ids.id
 
@@ -408,21 +399,38 @@ $(document).on('click', '.area-name-check', function() {
 
 
 // edit of label name
-$(document).on('click', '.label-field', function() {
-  let labelId = $(this).attr('id')
-  let id = justNumbers(labelId)
-  $(this).hide()
-  $(`#field_input${id}`).hide()
-  $(`#field_name_input${id}`).show()
-  $(`#field_name_check${id}`).show()
+$(function() {
+  var label
+  var labelId
+
+  $(document).on('click', '.label-field', function() {
+    label = $(this)
+    labelId = label.attr('id')
+
+    let fieldInputVal = label.text()
+  
+    $('#modal_edit_field').show()
+    $('#field_input').val(fieldInputVal)
+  })
+
+  $('#save_field_name').on({
+    click: function() {
+      let labelParentId = label.parent().attr('id')
+      let newFieldInputVal = $('#field_input').val()
+  
+      $('#modal_edit_field').hide()
+      $(`#${labelParentId} #${labelId}`).text(newFieldInputVal)
+    }
+  })
+})
+ 
+$('#cancel_field_name').on({
+  click: function() {
+    $('#modal_edit_field').hide()
+  }
 })
 
-$(document).on('click', '.field-name-check', function() {
-  let fieldId = $(this).attr('id')
-  let id = justNumbers(fieldId)
-  $(this).hide()
-  $(`#label_field${id}`).show()
-  $(`#label_field${id}`).text($(`[name = field_name_input${id}]`).val())
-  $(`#field_name_input${id}`).hide()
-  $(`#field_input${id}`).show()
-})
+
+
+
+
