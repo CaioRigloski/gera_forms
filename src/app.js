@@ -44,9 +44,8 @@ app.use(flash())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-app.use(userRoutes)
 app.use(router)
-
+app.use(userRoutes)
 app.use(auth)
 
 

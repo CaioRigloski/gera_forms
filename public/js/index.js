@@ -25,7 +25,7 @@ function newId(element) {
   return countId(idNumber)
 }
 
-// return the id area of the clicked new-field button/dropdown options
+// return the new id and id area of the clicked new-field button/dropdown options
 function letAreaIdOfField(newFieldBtn) {
   let parentId = newFieldBtn.closest('.area').attr('id')
 
@@ -49,7 +49,7 @@ function newField(areaId, fieldId, fieldName, secondaryFieldId, secondaryFieldNa
   }
 
   if(!secondaryFieldId) {
-    $(`#form_area_container${areaId}`).append(
+    $(`#form_area_container${areaId} #area_col1`).append(
       `
       <div>
         <label for='${areaId}field_input${fieldId}' id='label_field${fieldId}' class="label-field">${fieldName}${id}</label>
@@ -58,7 +58,7 @@ function newField(areaId, fieldId, fieldName, secondaryFieldId, secondaryFieldNa
         `
     )
   } else {
-    $(`#form_area_container${areaId}`).append(
+    $(`#form_area_container${areaId} #area_col1`).append(
       `<div>
         <label for='${areaId}field_input${fieldId}' id='label_field${fieldId}' class="label-field">${fieldName}</label>
           <input id='${areaId}field_input${fieldId}' name='field_input${fieldId}' class='form-control ${inputClass}'>
@@ -69,6 +69,31 @@ function newField(areaId, fieldId, fieldName, secondaryFieldId, secondaryFieldNa
     `
     )
   }
+}
+
+function newCompleteAdressFields(areaId, firstId) {
+  let secId = countId(firstId)
+  let thirdId = countId(secId)
+  let fourthId = countId(thirdId)
+  let fivethId = countId(fourthId)
+
+  let a = $(`#form_area_container${areaId} #area_col1`).append(
+    `<div class=>
+      <label for='${areaId}field_input${firstId}' id='label_field${firstId}' class="label-field">CEP</label>
+        <input id='${areaId}field_input${firstId}' name='field_input${firstId}' class='cep-field-input form-control'>
+
+      <label for='${areaId}field_input${secId}' id='label_field${secId}' class="label-field">Logradouro</label>
+        <input id='${areaId}field_input${secId}' name='field_input${secId}' class='form-control''>
+
+      <label for='${areaId}field_input${thirdId}' id='label_field${thirdId}' class="label-field">Bairro</label>
+        <input id='${areaId}field_input${thirdId}' name='field_input${thirdId}'class='form-control'>
+
+      <label for='${areaId}field_input${fourthId}' id='label_field${fourthId}' class="label-field">Cidade</label>
+        <input id='${areaId}field_input${fourthId}' name='field_input${fourthId}'class='form-control'>
+
+      <label for='${areaId}field_input${fivethId}' id='label_field${fivethId}' class="label-field">UF</label>
+        <input id='${areaId}field_input${fivethId}' name='field_input${fivethId}'class='form-control'>
+      `)
 }
 
 
@@ -164,6 +189,9 @@ $('#new_area').on({
               </svg>
             </button>
           </div>
+          <div style="flex: 1">
+            <button type="button" class="btn btn-primary new-col" style="height: 42px; opacity: 60%;">Nova coluna</button>
+          </div>
           <div class="dropdown d-flex align-items-center justify-content-center" style="gap: 0.8px;">
             <button id="new_field" type="button" class="btn new-field btn-success" style="height: 42px;">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
@@ -187,7 +215,13 @@ $('#new_area').on({
         </div>
       `)
 
-    $(`#area${id}`).append(`<div id="form_area_container${id}" class="container form-area-container d-flex flex-wrap gap-4">
+    $(`#area${id}`).append(`
+    <div id="rows${id}" class="container d-flex flex-column flex-wrap gap-4 pt-5">
+      <div id="form_area_container${id}" class="row">
+        <div id="area_col1" class="col form-area-container">
+        
+        </div>
+      </div>
     </div>`)
 
     var areaNameVal = $(`[name = area_name_input${id}]`).val()
@@ -196,6 +230,27 @@ $('#new_area').on({
   
 })
 
+// Create new Column
+$(document).on('click', '.new-col', function() {
+  var thisvar = $(this)
+
+  let areaId = thisvar.closest('.area').attr('id')
+  let areaIdNumber = justNumbers(areaId)
+  
+  let lastColId = $(`#${areaId} .form-area-container`).last('.col').attr('id')
+
+  let colIdNumber = justNumbers(lastColId)
+
+  let newId = countId(colIdNumber)
+
+  $(`#form_area_container${areaIdNumber}`).append(
+    `
+    <div id="area_col${newId}" class="col form-area-container">
+        
+    </div>
+    `
+  )
+})
 
 // Create new field
 $(document).on('click', '.new-field', function() {
@@ -205,7 +260,6 @@ $(document).on('click', '.new-field', function() {
 
   let id = ids.id
   let areaId = ids.areaId
-  console.log(id, areaId)
 
   newField(areaId, id, 'Campo')
 })
@@ -259,24 +313,7 @@ $(document).on('click', '.endereco-field', function() {
   let id = ids.id
   let areaId = ids.areaId
 
-  $(`#form_area_container${areaId}`).append(
-    `<div>
-      <label for='${areaId}field_input${id}' id='label_field${id}' class="label-field">CEP</label>
-        <input id='${areaId}field_input${id}' name='field_input${id}' class='cep-field-input form-control'>
-
-      <label for='field_input${id}' id='label_field${id}' class="label-field">Logradouro</label>
-        <input id='${areaId}field_input${id}' name='field_input${id}' class='form-control''>
-
-      <label for='field_input${id}' id='label_field${id}' class="label-field">Bairro</label>
-        <input id='${areaId}field_input${id}' name='field_input${id}'class='form-control'>
-
-      <label for='field_input${id}' id='label_field${id}' class="label-field">Cidade</label>
-        <input id='${areaId}field_input${id}' name='field_input${id}'class='form-control'>
-
-      <label for='field_input${id}' id='label_field${id}' class="label-field">UF</label>
-        <input id='${areaId}field_input${id}' name='field_input${id}'class='form-control'>
-      `)
-
+  newCompleteAdressFields(areaId, id)
   masks()
 
 })
@@ -349,7 +386,6 @@ $(function() {
     labelId = label.attr('id')
 
     let fieldInputVal = label.text()
-    console.log(label, fieldInputVal)
   
     $('#modal_edit_field').show()
     $('#field_input').val(fieldInputVal)
@@ -371,8 +407,3 @@ $('#cancel_field_name').on({
     $('#modal_edit_field').hide()
   }
 })
-
-
-
-
-
