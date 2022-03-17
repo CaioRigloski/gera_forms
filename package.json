@@ -24,8 +24,11 @@
     "jquery": "^3.6.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
+    "node-fetch": "^2.6.7",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.15.0"
+    "sequelize": "^6.15.0",
+    "throttled-queue": "^2.1.2",
+    "xmlhttprequest": "^1.8.0"
   }
 }

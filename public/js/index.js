@@ -31,7 +31,7 @@ function letAreaIdOfField(newFieldBtn) {
 
   let areaId = justNumbers(parentId)
 
-  let lastFieldId = $(`#form_area_container${areaId} .label-field`).last().attr('id')
+  let lastFieldId = $(`#form_area_container${areaId} .label-field`).last().attr('field')
 
   let id = newId(lastFieldId)
   
@@ -52,7 +52,7 @@ function newField(areaId, fieldId, fieldName, secondaryFieldId, secondaryFieldNa
     $(`#form_area_container${areaId} #area_col1`).append(
       `
       <div>
-        <label for='${areaId}field_input${fieldId}' id='label_field${fieldId}' class="label-field">${fieldName}${id}</label>
+        <label for='${areaId}field_input${fieldId}' area="area${areaId}" field="field${fieldId}" class="label-field">${fieldName}${id}</label>
           <input type="text" id='${areaId}field_input${fieldId}' name='field_input${fieldId}' class='form-control ${inputClass}'>
        </div> 
         `
@@ -60,10 +60,10 @@ function newField(areaId, fieldId, fieldName, secondaryFieldId, secondaryFieldNa
   } else {
     $(`#form_area_container${areaId} #area_col1`).append(
       `<div>
-        <label for='${areaId}field_input${fieldId}' id='label_field${fieldId}' class="label-field">${fieldName}</label>
+        <label for='${areaId}field_input${fieldId}' area="area${areaId}" field="field${fieldId}" class="label-field">${fieldName}${id}</label>
           <input id='${areaId}field_input${fieldId}' name='field_input${fieldId}' class='form-control ${inputClass}'>
   
-        <label for='${areaId}field_input${secondaryFieldId}' id='label_field${secondaryFieldId}' class="label-field">${secondaryFieldName}</label>
+        <label for='${areaId}field_input${secondaryFieldId}' area="area${areaId}" field="field${secondaryFieldId}" class="label-field">${secondaryFieldName}</label>
           <input id='${areaId}field_input${secondaryFieldId}' name='field_input${secondaryFieldId}' class='form-control ${inputClass}'>
       </div>
     `
@@ -79,19 +79,19 @@ function newCompleteAdressFields(areaId, firstId) {
 
   let a = $(`#form_area_container${areaId} #area_col1`).append(
     `<div class=>
-      <label for='${areaId}field_input${firstId}' id='label_field${firstId}' class="label-field">CEP</label>
+      <label for='${areaId}field_input${firstId}' area="area${areaId}" field="field${firstId}" class="label-field">CEP</label>
         <input id='${areaId}field_input${firstId}' name='field_input${firstId}' class='cep-field-input form-control'>
 
-      <label for='${areaId}field_input${secId}' id='label_field${secId}' class="label-field">Logradouro</label>
+      <label for='${areaId}field_input${secId}' area="area${areaId}" field="field${secId}" class="label-field">Logradouro</label>
         <input id='${areaId}field_input${secId}' name='field_input${secId}' class='form-control''>
 
-      <label for='${areaId}field_input${thirdId}' id='label_field${thirdId}' class="label-field">Bairro</label>
-        <input id='${areaId}field_input${thirdId}' name='field_input${thirdId}'class='form-control'>
+      <label for='${areaId}field_input${thirdId}' area="area${areaId}" field="field${thirdId}" class="label-field">Bairro</label>
+        <input id='${areaId}field_input${thirdId}' name='field_input${thirdId}' class='form-control'>
 
-      <label for='${areaId}field_input${fourthId}' id='label_field${fourthId}' class="label-field">Cidade</label>
-        <input id='${areaId}field_input${fourthId}' name='field_input${fourthId}'class='form-control'>
+      <label for='${areaId}field_input${fourthId}' area="area${areaId}" field="field${fourthId}" class="label-field">Cidade</label>
+        <input id='${areaId}field_input${fourthId}' name='field_input${fourthId}' class='form-control'>
 
-      <label for='${areaId}field_input${fivethId}' id='label_field${fivethId}' class="label-field">UF</label>
+      <label for='${areaId}field_input${fivethId}' area="area${areaId}" field="field${fivethId}" class="label-field">UF</label>
         <input id='${areaId}field_input${fivethId}' name='field_input${fivethId}'class='form-control'>
       `)
 }
@@ -262,6 +262,8 @@ $(document).on('click', '.new-field', function() {
   let areaId = ids.areaId
 
   newField(areaId, id, 'Campo')
+
+  
 })
 
 // Pre ready fields
@@ -383,7 +385,7 @@ $(function() {
 
   $(document).on('click', '.label-field', function() {
     label = $(this)
-    labelId = label.attr('id')
+    labelId = label.attr('for')
 
     let fieldInputVal = label.text()
   
@@ -395,9 +397,9 @@ $(function() {
     click: function() {
       let labelParentId = label.closest('.form-area-container').attr('id')
       let newFieldInputVal = $('#field_input').val()
-  
+
       $('#modal_edit_field').hide()
-      $(`#${labelParentId} #${labelId}`).text(newFieldInputVal)
+      $(`[for=${labelId}]`).text(newFieldInputVal)
     }
   })
 })
@@ -406,4 +408,38 @@ $('#cancel_field_name').on({
   click: function() {
     $('#modal_edit_field').hide()
   }
+})
+
+$(document).on('click', '#save_form', function() {
+  var labels = []
+  
+  $(`.label-field`).each(function() {
+
+    if(this) {
+      var area = this.getAttribute('area')
+
+      var column = $(this).closest('.col').attr('id')
+
+      var fieldId = this.getAttribute('field')
+
+      var fieldName = this.textContent
+      
+      labels.push({area, column, fieldId, fieldName})
+    }
+  })
+
+  var data = JSON.stringify(labels)
+
+  $.ajax({
+    url: '/save-form',
+    method: 'POST',
+    data: data,
+
+    success: function() {
+      alert('sucesso')
+    },
+    error: function(er) {
+      alert(er)
+    }
+  })
 })
